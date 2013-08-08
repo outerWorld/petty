@@ -59,6 +59,7 @@ int pkt_process(void *pkt, int pkt_sz, void *ctx)
 		fsync(p_ctx->fd);
 	}
 
+#if 0
 	if (pkt_sz < sizeof(http_user_info_t)) {
 		return 0;
 	}
@@ -68,6 +69,7 @@ int pkt_process(void *pkt, int pkt_sz, void *ctx)
 	inet_ntop(AF_INET, (char*)&src_ip, src_ip_str, sizeof(src_ip_str));
 	inet_ntop(AF_INET, (char*)&dst_ip, dst_ip_str, sizeof(dst_ip_str));
 	fprintf(stdout, "%s %s\n", src_ip_str, dst_ip_str);
+#endif
 
 	return 0;
 }
