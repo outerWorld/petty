@@ -38,7 +38,8 @@ public:
 	void set_app_pkt_cb(pkt_cb pkt_fun, int pkt_cap_type, PVOID ctx)
 	{
 		app_pkt_cb = pkt_fun;
-		app_pkt_cb_ctx = ctx;	
+		app_pkt_cb_ctx = ctx;
+		pkt_type = pkt_cap_type;
 	}
 
 	void get_app_pkt_cb(pkt_cb & pkt_fun, PVOID &ctx) {
@@ -62,11 +63,13 @@ public:
 		PKT_ARP,
 		PKT_RARP,
 		PKT_IPV6,
+		PKT_ALL,
 		PKT_CAP_SIZE
 	}PKT_CAP_TYPE;
 
 private:
 	int	type;
+	int pkt_type;
 	int with_vlan;
 	pcap_t *dev_hd; // device handler
 	pcap_handler p_pkt_proc;

@@ -30,7 +30,6 @@ static int radius_cb(void *un_pkt, int len, void *ctx)
 	if (p_ip->addr) fprintf(stdout, "%p:[%08x] %d\n", p_ip->addr, p_ip->addr ? *(unsigned int*)p_ip->addr : 0, p_ip->len);
 	if (p_status->addr) fprintf(stdout, "%p:[%08x] %d\n", p_status->addr, p_status->addr ? *(unsigned int*)p_status->addr : 0, p_status->len);
 
-<<<<<<< .mine
 	if (p_name) {
 		fprintf(stdout, "name = %p[%.*s], %d\n", p_name->addr, p_name->len, p_name->addr, p_name->len);
 	}
@@ -41,10 +40,7 @@ static int radius_cb(void *un_pkt, int len, void *ctx)
 		fprintf(stdout, "status = %p, %d\n", p_status->addr, p_status->len);
 	}
 
-	if (p_name  && p_ip && p_status) {
-=======
 	if (p_name->addr  && p_ip->addr && p_status->addr) {
->>>>>>> .r4568
 		fprintf(stdout, "ok = %d\n", g_num++);
 	}
 
