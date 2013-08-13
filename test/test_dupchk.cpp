@@ -59,7 +59,7 @@ int pkt_process(void *pkt, int pkt_sz, void *ctx)
 		fsync(p_ctx->fd);
 	}
 
-#if 0
+#if 1
 	if (pkt_sz < sizeof(http_user_info_t)) {
 		return 0;
 	}
@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
 		p_x->set_app_pkt_cb(pkt_process, xcap::PKT_IP, (void*)&ctx);
 	}
 	if (0 != p_x->xcap_run()) {
+		ERR("xcap_run failed!");
 		goto __EXIT;
 	}
 

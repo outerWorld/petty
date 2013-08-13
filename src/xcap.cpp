@@ -102,7 +102,6 @@ int xcap::xcap_run()
 	while (ret >= 0) {
 		ret = pcap_dispatch(dev_hd, -1, p_pkt_proc, (unsigned char*)pkt_proc_ctx);
 		if (0 == ret) {
-			//fprintf(stdout, "pcap_dispatch returns 0\n");
 			usleep(5);
 		}
 	}
