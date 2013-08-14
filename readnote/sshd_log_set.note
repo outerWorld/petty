@@ -1,0 +1,9 @@
+设置ssh日志记录
+1、修改/etc/ssh/sshd_config 
+将SyslogFacility AUTHPRIV改为SyslogFacility local5
+2 修改/etc/syslog.conf
+添加如下两行：
+＃ save sshd messages also to sshd.log
+local5.* /data/log/sshd.log
+3、重启sshd和syslog服务
+然后你可以使用ssh来登录看看发现与sshd有关的信息都记录到了sshd.log中。不在是messages。

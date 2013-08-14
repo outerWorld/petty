@@ -1,0 +1,16 @@
+（以下内容结合scrapy-0.16的installation guide）
+1. 安装包依赖
+1.1 Python 2.6或2.7
+进入到页面http://www.python.org/getit/，可以找到以下链接。
+http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz
+http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi
+http://www.python.org/ftp/python/2.7.5/python-2.7.5.amd64.msi
+http://www.python.org/ftp/python/2.7.5/python-2.7.5-macosx10.6.dmg
+http://www.python.org/ftp/python/2.7.5/python-2.7.5-macosx10.3.dmg
+以ubuntu为例：
+wget http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz将python2.7安装包解压tar -xvf Python-2.7.5.tgz后，进入目录Python-2.7.5，执行./configure && make，之后再sudo make install即安装完毕。
+
+1.2 OpenSSL
+除了windows操作系统，其它系统都预装有该库。
+
+1.3 python包管理器pip或easy_install

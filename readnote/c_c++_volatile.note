@@ -1,0 +1,86 @@
+通过汇编c源码来学习volatile的特别之处。
+c源码如下：
+// test_c.c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+void show(int i)
+{
+	volatile int j = 0;
+	int k = 0;
+	j = i + 1;
+	k = i + 2;
+	printf("%d %d\n", j, k);
+}
+int main(int argc, char *argv[])
+{
+	show(0);
+	return 0;
+}
+
+gcc -S test_c.c的输出test_c.s如下：
+	.file	"test_c.c"
+	.section	.rodata
+.LC0:
+	.string	"%d %d\n"
+	.text
+	.globl	show
+	.type	show, @function
+show:
+.LFB0:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	subl	$40, %esp
+	movl	$0, -16(%ebp)
+	movl	$0, -12(%ebp)
+	movl	8(%ebp), %eax
+	addl	$1, %eax
+	movl	%eax, -16(%ebp)
+	movl	8(%ebp), %eax
+	addl	$2, %eax
+	movl	%eax, -12(%ebp)
+	movl	-16(%ebp), %edx
+	movl	$.LC0, %eax
+	movl	-12(%ebp), %ecx
+	movl	%ecx, 8(%esp)
+	movl	%edx, 4(%esp)
+	movl	%eax, (%esp)
+	call	printf
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	show, .-show
+	.globl	main
+	.type	main, @function
+main:
+.LFB1:
+	.cfi_startproc
+	pushl	%ebp
+	.cfi_def_cfa_offset 8
+	.cfi_offset 5, -8
+	movl	%esp, %ebp
+	.cfi_def_cfa_register 5
+	andl	$-16, %esp
+	subl	$16, %esp
+	movl	$0, (%esp)
+	call	show
+	movl	$0, %eax
+	leave
+	.cfi_restore 5
+	.cfi_def_cfa 4, 4
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3"
+	.section	.note.GNU-stack,"",@progbits
+
+首先分析汇编语言的

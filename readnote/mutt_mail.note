@@ -1,0 +1,7 @@
+1. mutt发信时设定发件人邮箱的办法 
+建立 ~/.muttrc
+
+set envelope_from=yes
+set from=yourname@gmail.com
+set realname="yourname"
+set use_from=yes
