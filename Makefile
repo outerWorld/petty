@@ -1,7 +1,7 @@
 #default path for installing petty
 install_PREFIX=/usr/local
 lib_install_PATH=$(install_PREFIX)/lib
-include_install_PATH=$(install_PREFIX)/include
+include_install_PATH=$(install_PREFIX)/include/petty
 
 libs:
 	cd src && make clean && make libs && cp *.a ../lib && cp *.so ../lib && cd ..
