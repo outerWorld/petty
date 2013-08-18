@@ -21,5 +21,41 @@
     工作经验： 5~10年
     工作性质： 全职
 
-2.
+2. sina
+Python开发职位JD
 
+工作职责：
+1.    参与开发CDN全平台的配置管理系统
+2.    参与开发CDN的自动化监控报警系统
+3.    参与开发CDN的自动化代码发布系统
+4.    参与开发CDN的全网流量调度系统
+5.    参数数据库的设计及优化
+6.    参与CDN的大数据分析工作
+工作中包含了前端和后端的开发。
+
+任职要求：
+1. 有良好的沟通能力和团队合作精神
+2. 精通python，精通常见的Python模块的使用
+3. 良好的编码习惯，遵守PEP8，或Google Python Style Guide 规范
+4. 熟练使用Django/Tornado/Web.py等任两种web框架，精通MVC模式，研究过源码者优先
+5. 熟练使用MySQL/MongoDB/Memcache等任两种存储
+6. 熟练使用html/css/js等前端技术
+7. 有Hadoop(Hive/Pig)/Storm使用经验者优先
+8. 有前端开发经验者优先
+9. 熟悉C/C++/Ruby者优先
+10. 有2年以上开发经验，如果能力特别强可以例外
+
+高性能服务端软件开发职位JD
+工作职责：
+1. 参与Apache TrafficServer 和 Nginx 的二次开发
+2. 参与服务器性能调优
+3. 参与CDN系统的架构优化
+
+任职要求：
+1. 有良好的沟通能力和团队合作精神
+2. 精通C/C++/Python编程
+3. 良好的编码习惯，Google C++ Style Guide 规范或其他
+4. 精通Linux环境下高并发场景的多进程/多线程编程，Socket编程
+5. 熟悉常见数据库Mysql/BerkeleyDB/SQLite中至少一种的使用和开发
+6. 具有大型网络程序，系统程序开发经验者优先，熟悉互联网行业常用协议HTTP/TCP/UDP/DNS等
+7. 有2年以上开发经验

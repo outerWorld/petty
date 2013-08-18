@@ -49,3 +49,16 @@
 37. 数据结构/算法：用树实现一个计算器
 38. 语言/汇编：当要对一个寄存器清零时，有两种方案,movl $0, %eax和xor %eax,%eax，请问哪种方法更佳？
 39. 网络/协议：如何设计通过tcp/udp大数据/大文件的传输
+40. 语言/C++：定义一个template的类
+template <class Type> Test {
+public:
+	Test();
+	~Test();
+private:
+	static Test<Type> *p;
+	static int i;
+	Type _x, _y;
+}
+int main() {return 0;} 这种情况下编译、运行时Test起到什么作用，它的各个成员会怎么样？
+int main() {Test<int> test; return 0;} 这种情况下编译、运行时Test起到什么作用，它的各个成员会怎么样？
+
