@@ -1,0 +1,142 @@
+About Scrapy
+Scrapy是一个抓取网站的框架，用户需要做的只是定义抓取网站的spider，并在其中定义抓取的规则，获取需要抓取的数据，Scrapy管理其他复杂的工作，比如并发请求，提取之后的数据保存等。
+Scrapy 声称他们“偷取”了Django的灵感，虽然两者的方向怎么都联系不到一起去，但是确实如果对Django有了解，对Scrapy的结构会感到很亲切。 Scrapy也会有项目的概念，一个项目里面可以包含多个抓取蜘蛛（spider），抓取的数据结构定义Items，以及一些配置。
+Scrapy抓取的流程：通过spider中的定义需要抓取的网站，并将需要的数据提取到Items里面保存，然后通过管道（pipeline）将Items里面的数据提取，保存到文件或者数据库。
+
+Scrapy Tutorial
+首先，新建一个项目叫dmoz：
+这里参考Scrapy Tutorial里面的例子做说明，抓取Open directory project(dmoz)上的数据。
+scrapy startproject dmoz
+将会创建一个叫dmoz的目录，结构如下：
+
+dmoz/
+   scrapy.cfg   
+   dmoz/
+       __init__.py
+       items.py
+       pipelines.py
+       settings.py
+       spiders/
+           __init__.py
+           ...
+scrapy.cfg: 项目配置文件（基本上让它吧）
+items.py: 需要提取的数据结构定义文件
+pipelines.py: 管道定义，用来对items里面提取的数据做进一步处理
+settings.py: 放一些配置
+spiders: 放置spider的目录
+然后，在items.py里面定义我们要抓取的数据：
+
+from scrapy.item import Item, Field
+
+class DmozItem(Item):
+   title = Field()
+   link = Field()
+   desc = Field()
+这里我们需要获取dmoz页面上的标题，链接，描述，所以定义一个对应的items结构，不像Django里面models的定义有那么多种类的Field，这里只有一种就叫Field()，再复杂就是Field可以接受一个default值。
+
+接下来，开始写spider：
+
+spider只是一个继承字scrapy.spider.BaseSpider的Python类，有三个必需的定义的成员
+
+name: 名字，这个spider的标识
+start_urls: 一个url列表，spider从这些网页开始抓取
+parse(): 一个方法，当start_urls里面的网页抓取下来之后需要调用这个方法解析网页内容，同时需要返回下一个需要抓取的网页，或者返回items列表（到底返回哪个，见FAQ）
+所以在spiders目录下新建一个spider，dmoz_spider.py:
+
+class DmozSpider(BaseSpider):
+   name = "dmoz.org"
+   start_urls = [
+       "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
+       "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/"
+   ]
+
+   def parse(self, response):
+       filename = response.url.split("/")[-2]
+       open(filename, 'wb').write(response.body)
+下一步，提取数据到Items里面，这里主要用到XPath提取网页数据：
+
+scrapy有提供两个XPath选择器，HtmlXPathSelector和XmlXPathSelector，一个用于HTML，一个用于XML，XPath选择器有三个方法
+
+select(xpath): 返回一个相对于当前选中节点的选择器列表（一个XPath可能选到多个节点）
+extract(): 返回选择器（列表）对应的节点的字符串（列表）
+re(regex): 返回正则表达式匹配的字符串（分组匹配）列表
+一种很好的方法是在Shell里面对XPath进行测试：
+
+scrapy shell http://www.dmoz.org/Computers/Programming/Languages/Python/Books/
+现在修改parse()方法看看如何提取数据到items里面去：
+
+def parse(self, response):
+      hxs = HtmlXPathSelector(response)
+      sites = hxs.select('//ul/li')
+      items = []
+      for site in sites:
+          item = DmozItem()
+          item['title'] = site.select('a/text()').extract()
+          item['link'] = site.select('a/@href').extract()
+          item['desc'] = site.select('text()').extract()
+          items.append(item)
+      return items
+最后，保存抓取的数据：
+
+scrapy提供了几个选项，可以将数据保存为json，csv或者xml文件，下面开始放出定义的dmoz_spider(注意他的name是dmoz.org)，并将抓取的数据保存为json，在dmoz目录下执行命令
+
+scrapy crawl dmoz.org --set FEED_URI=items.json --set FEED_FORMAT=json
+如果需要对items数据进一步处理，比如直接保存到数据库，就要用到pipelines
+
+FAQ That Not Included In Manual
+
+不断的抓取下一个链接如何实现，items如何保存？
+
+这里需要解释一下parse()方法，parse可以返回Request列表，或者items列表，如果返回的是Request，则这个Request会放到下一次需要抓取的队列，如果返回items，则对应的items才能传到pipelines处理（或者直接保存，如果使用默认FEED exporter）。那么如果由parse()方法返回下一个链接，那么items怎么返回保存？ Request对象接受一个参数callback指定这个Request返回的网页内容的解析函数（实际上start_urls对应的callback默认是parse方法），所以可以指定parse返回Request，然后指定另一个parse_item方法返回items：
+
+def parse(self, response):
+    # doSomething
+    return [Request(url, callback=self.parse_item)]
+def parse_item(self, response):
+    # item['key'] = value
+    return [item]
+关于解析函数的返回值，除了返回列表，其实还可以使用生成器，是等价的：
+
+def parse(self, response):
+    # doSomething
+    yield Request(url, callback=self.parse_item)
+def parse_item(self, response):
+    yield item
+如何在解析函数之间传递值？
+
+一种常见的情况：在parse中给item某些字段提取了值，但是另外一些值需要在parse_item中提取，这时候需要将parse中的item传到parse_item方法中处理，显然无法直接给parse_item设置而外参数。 Request对象接受一个meta参数，一个字典对象，同时Response对象有一个meta属性可以取到相应request传过来的meta。所以解决上述问题可以这样做：
+
+def parse(self, response):
+    # item = ItemClass()
+    yield Request(url, meta={'item': item}, callback=self.parse_item)
+def parse(self, response):
+    item = response.meta['item']
+    item['field'] = value
+    yield item
+pipelines.py如何使用？
+
+具体参考：http://doc.scrapy.org/topics/item-pipeline.html，只需要在settings.py中启用定义的pipelines组件即可，可能困惑的地方在于如果指定了默认的feed exporter，piplelines会对item处理的流程会有什么影响，答案是pipelines会取代默认的feed exporter，项目中所有spider返回的item（比如parse_item）最后都会传入pipelines中定义的proccess_item()方法进一步处理。
+
+Other Tricks
+如何处理extract()返回为空列表的情况?
+因为extract()方法返回的是字符串列表，如果选择器没有获取到某个节点的内容，则是一个空列表，所以经常会遇到这种处理：
+item['field'] = ex_data[0].strip() if len(ex_data) > 0 else ''
+一种更好的处理方式：
+item['field'] = ''.join(ex_data).strip()
+如何给XPath选取内容设置默认值?
+XPath选取节点内的文本时，如果节点内容为空，XPath不会返回一个空字符串，而是什么都不返回，对应到列表就是对应的列表项少一项，有时候需要这样的空字符串当默认值。XPath中有一个concat函数可以实现这种效果：
+
+text = hxs.select(‘concat(//span/text(), “”)’).extract()
+对于空span会返回一个空字符串
+
+scrapy.log是很好用的调试工具
+
+需要先在settings.py中指定LOG_LEVEL，默认为‘DEBUG’，所以抓取的时候每个item获取的内容都会输出到屏幕，如果抓取的内容太多，有时候会把一些异常信息淹没。所以有时候需要设置高一点的级别，比如‘WARNING’，这样在spider中可以在需要的地方使用log.msg('info', log.WARNING)输出一些有用的信息。
+
+另一种方便的调试方法，在spider中调用交互shell环境
+
+在需要中断调试的地方插入：
+
+from scrapy.shell import inspect_response
+inspect_response(response)
+这时候会打断抓取，进入一个shell，response为当前抓取的url内容。

@@ -1,0 +1,11 @@
+1. __init__重写
+class MySpider(CrawlSpider):
+    name = "company"
+    allowed_domains = ["site.com"]
+    start_urls = ["http://www.site.com"]
+
+    def __init__(self, *a, **kw):
+        super(MySpider, self).__init__(*a, **kw)
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
+
+2. 

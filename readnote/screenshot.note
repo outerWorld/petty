@@ -1,0 +1,16 @@
+1 命令行抓屏工具
+1.1 import
+使用方法：import 保存的文件名
+可以使用鼠标选取一个矩形框。在你放下鼠标左键的那一刻，一个该矩形框的截屏会以import后面跟的文件名保存在当前目录下。
+
+1.2 scrot
+使用方法:	
+scrot -d 4 screenshot.png
+它将对整个桌面截屏，从执行命令到截下屏幕，中间间隔4秒。
+scrot -c -d 4 screenshot.png 
+来显示出倒计时数。
+使用 scrot -q 80 -c -d 4 screenshot.jpg 来以80%质量保存jpg文件。 
+同时也可以给scrot命令带上特殊的字符串，以产生包含日期和文件大小的截图文件名： scrot ‘%Y-%m-%d_$wx$h.png’ -e ‘mv $f ~/Desktop/Pictures/’ 
+该命令将会在电脑上产生一个名为“2010-11-28_2560×1024.png”的图像文件，并将它移动至桌面上一个名叫Pictures的文件夹里面。
+
+2 

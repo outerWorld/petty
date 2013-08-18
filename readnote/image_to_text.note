@@ -1,0 +1,14 @@
+将图片转换为文字
+OCR是一种将文字扫描后的图片转换成文字的技术
+http://os.tedfans.com/p/cuneiform+for+linux/spro
+1. Ubuntu的OCR工具
+1.1  fuzzyocr - spamassassin plugin to check image attachments
+1.2 gocr - a command line OCR
+1.3 libhocr0 - Hebrew OCR
+1.4 ocrad - OCR program
+1.5 ocrfeeder - document layout analysis and optical character recognition system
+1.6 ocropus - document analysis and OCR system
+1.7 tesseract-ocr - command line OCR
+1.8 cuneiform - multi-language OCR system
+
+
