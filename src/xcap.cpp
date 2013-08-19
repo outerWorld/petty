@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include <unistd.h>
+#include <pthread.h>
 
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -95,18 +96,34 @@ int xcap::init(char *dev, char *filter, int promisc, int to_ms)
 	return 0;
 }
 
-int xcap::xcap_run()
+static void *xcap::__run(void *arg)
 {
 	int ret = 0;
+	xcap *p_x = (xcap*)arg;
 
 	while (ret >= 0) {
-		ret = pcap_dispatch(dev_hd, -1, p_pkt_proc, (unsigned char*)pkt_proc_ctx);
+		ret = pcap_dispatch(p_x->dev_hd, -1, p_x->p_pkt_proc, (unsigned char*)p_x->pkt_proc_ctx);
 		if (0 == ret) {
 			usleep(5);
 		}
 	}
+	
+	return NULL;
+}
 
-	return ret;
+unsigned long xcap::xcap_run(int new_instance)
+{
+	pthread_t tid;
+
+	if (new_instance) {
+		if (0 != pthread_create(&tid, NULL, __run, this)) {
+			return -1;
+		}
+	} else {
+		__run(this);
+	}
+
+	return tid;
 }
 
 int xcap::add_pkt_cb(pkt_cb pkt_fun, int pkt_cap_type, void *ctx)
