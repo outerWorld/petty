@@ -46,8 +46,10 @@ public:
 		ctx = app_pkt_cb_ctx;
 		pkt_fun = app_pkt_cb;
 	}
+	
+	static void *__run(void *arg);
 
-	int xcap_run();
+	unsigned long xcap_run(int new_instance = 0);
 
 	void xcap_stop() { pcap_breakloop(dev_hd); }
 

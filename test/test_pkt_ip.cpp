@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 		p_x->set_app_pkt_cb(fj_pkt_proc, xcap::PKT_IP, p_ctx);
 	}
 
-	if (0 != p_x->xcap_run()) {
+	if (-1 == p_x->xcap_run()) {
 		return 0;
 	}
 

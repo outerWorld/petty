@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	
 	p_x->add_pkt_cb(arp_pkt_proc, xcap::PKT_ARP, p_ctx);
 
-	if (0 != p_x->xcap_run()) {
+	if (-1 == p_x->xcap_run()) {
 		return 1;
 	}
 

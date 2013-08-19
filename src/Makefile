@@ -1,7 +1,7 @@
 CC=g++
 AR=ar
 RANLIB=ranlib
-CFLAGS=-I../include -g -Wall -fPIC
+CFLAGS=-I../include -g -Wall -fPIC -fpermissive
 LFLAGS=-lpthread -lpcap -lcrypto
 LIBS=libpetty.so libpetty.a
 lib_OBJS=

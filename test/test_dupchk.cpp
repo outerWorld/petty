@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	} else {
 		p_x->set_app_pkt_cb(pkt_process, xcap::PKT_IP, (void*)&ctx);
 	}
-	if (0 != p_x->xcap_run()) {
+	if (-1 == p_x->xcap_run()) {
 		ERR("xcap_run failed!");
 		goto __EXIT;
 	}
