@@ -8,6 +8,9 @@
 #ifndef __BUFF_H
 #define __BUFF_H
 
+#include <stdio.h>
+#include <string.h>
+
 class buff {
 public:
 	buff() {
@@ -39,13 +42,23 @@ public:
 		return 0;
 	}
 
+	int resize(int sz)
+	{
+		return create(sz);
+	}
+	
+	int clear() { len = 0; }
+
 	char* get_data() { return buf; }
 	int get_data_len() { return len; }
 	int	get_size() { return size; }
 	int get_cap() { return (size - len); }
 	char* get_buf() { return (buf + len); }
 	void add_len(int new_len) { len += new_len; }
-
+	void show()
+	{
+		fprintf(stdout, "aaa = %p %.*s", buf, len, buf);
+	}
 public:
 	int	size;
 	int	len;

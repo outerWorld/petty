@@ -4,7 +4,9 @@ lib_install_PATH=$(install_PREFIX)/lib
 include_install_PATH=$(install_PREFIX)/include/petty
 
 libs:
-	cd src && make clean && make libs && cp *.a ../lib && cp *.so ../lib && cd ..
+	cd src && make clean && make libs && cd ..
+	@if [ ! -d lib ]; then mkdir lib; fi
+	cd src && cp *.a ../lib && cp *.so ../lib && cd ..
 
 tests:
 	cd test && make clean && make tests && cd ..
@@ -23,3 +25,4 @@ all:libs tests
 clean:
 	cd src && make clean && cd .. && cd test && make clean && cd ..
 	rm -f *.o
+	rm -rf lib

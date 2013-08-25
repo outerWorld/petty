@@ -1,8 +1,11 @@
 CC=g++
 CFLAGS=-I../include -g
 LFLAGS=-L../lib -lpetty -lpcap -lcrypto
-BINS=getarp getpkt_ip test_dupchk test_tlog test_xcap test_daemon test_radius_dpi test_aes test_cmd test_socket test_heapsort
+BINS=getarp getpkt_ip test_dupchk test_tlog test_xcap test_daemon test_radius_dpi test_aes test_cmd test_socket test_heapsort test_xcmd
 RANLIB=ranlib
+
+test_xcmd:test_xcmd.o
+	${CC} -o $@ $^ ${LFLAGS}
 
 getarp:test_arp.o
 	${CC} -o $@ $^ ${LFLAGS}
