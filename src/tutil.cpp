@@ -192,3 +192,16 @@ char *str_esc(const char *str, int str_len, char **key, int *key_len)
 
 	return *key;
 }
+
+char *get_progname(const char *prg)
+{
+	int len = 0;
+	
+	if (!prg) return NULL;
+	len = strlen(prg);
+
+	while (len > 0 && '/' != prg[--len]);
+
+	return (char*)&prg[len + 1];
+}
+

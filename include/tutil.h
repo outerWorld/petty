@@ -36,4 +36,6 @@ unsigned int hash_calc(char *data, int len);
 // it is to escape the characters like '\0b' to 0x0b
 char *str_esc(const char *str, int str_len, char **key, int *key_len);
 
+char *get_progname(const char *prg);
+
 #endif // __TUTIL_H

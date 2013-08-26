@@ -235,6 +235,7 @@ static void xcap_default_pkt_proc(unsigned char* user_data, const struct pcap_pk
 	xcap * p_cap = (xcap*)user_data;
 
 	pkt_len = pkt_hdr->caplen;
+#if 0
 	if (p_cap->is_vlan()) {
 		eth_proto = *(unsigned short*)(pkt_data + ETH_HLEN + 2); // src6_dst6_vlan4_proto2
 		eth_size = ETH_HLEN + 4;
@@ -243,6 +244,18 @@ static void xcap_default_pkt_proc(unsigned char* user_data, const struct pcap_pk
 		eth_size = ETH_HLEN;
 	}
 	eth_proto = ntohs(eth_proto);
+#else
+	eth_proto = *(unsigned short*)(pkt_data + ETH_HLEN - 2); // src6_dst6_proto2
+	eth_proto = ntohs(eth_proto);
+	// auto detect on whether it is vlan, if so, delete the vlan tag.
+	if (ETH_P_8021Q == eth_proto) {
+		eth_size = ETH_HLEN + 4;
+		eth_proto = *(unsigned short*)(pkt_data + ETH_HLEN + 2); // src6_dst6_vlan4_proto2
+		eth_proto = ntohs(eth_proto);
+	} else {
+		eth_size = ETH_HLEN;
+	}
+#endif
 
 	if (eth_proto != ETH_P_IP && eth_proto != ETH_P_ARP && eth_proto != ETH_P_LOOP && eth_proto != ETH_P_RARP && eth_proto != ETH_P_IPV6) {
 		return;
