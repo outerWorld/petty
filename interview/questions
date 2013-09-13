@@ -67,3 +67,4 @@ int main() {Test<int> test; return 0;} 这种情况下编译、运行时Test起�
 44. 语言/C++：继承的时候，为什么要将析构函数设置为虚函数？
 45. 网络/协议：如果处于listen状态的tcp socket去connect另一个同样状态的socket会怎么样？
 46. 数据结构/算法：实现一个类，该类可实现位访问，包括单位（1bit）或多位（Nbit）
+47. 语言/C++：struct和class的区别是什么？如果struct里面声明一个class的成员，用new或malloc分别会发生什么事情？如果class是一个单类或是一个多继承或组合的类会是什么样？

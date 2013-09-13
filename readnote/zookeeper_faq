@@ -1,0 +1,68 @@
+1. ZooKeeper C客户端编译错误
+
+编写zookeeper客户端程序出现以下编译错误：
+/usr/local/include/zookeeper/recordio.h:76: error: expected unqualified-id before ‘__extension__’
+/usr/local/include/zookeeper/recordio.h:76: error: expected ‘)’ before ‘__extension__’
+/usr/local/include/zookeeper/recordio.h:76: error: expected unqualified-id before ‘)’ token
+解决方法在http://blog.csdn.net/falcon2000/article/details/6895784
+
+recordio.h:76 声明了htonll函数，其他文件可能对htonll做了宏定义，修改如下：
+#ifndef htonll
+int64_t htonll(int64_t v);
+#endif
+
+2. Zookeeper分布式安装手册
+一、安装准备
+1、下载zookeeper-3.3.1，地址：http://www.apache.org/dist/hadoop/zookeeper/zookeeper-3.3.1/
+2、JDK版本：jdk-6u20-linux-i586.bin
+3、操作系统：Linux s132 2.6.9-78.8AXS2smp #1 SMP Tue Dec 16 02:42:55 EST 2008 x86_64 x86_64 x86_64 GNU/Linux
+4、默认前提是安装完hadoop 0.20.2版本：
+    192.168.3.131 namenode
+    192.168.3.132 datanode
+    192.168.3.133 datanode
+二、操作步骤（默认在namenode上进行）
+1、拷贝以上文件到Linux的“/root”目录下。同时新建目录“/jz”。
+2、安装JDK，此步省略...
+3、解压zookeeper到/jz目录下。tar -zxvf zookeeper-3.3.1.tar.gz -C /jz
+4、将“/jz/zookeeper-3.3.1/conf”目录下zoo_sample.cfg修改名称为“zoo.cfg”
+5、打开zoo.cfg文件，修改配置如下：
+dataDir=/jz/zookeeper_data
+clientPort=2181
+initLimit=10
+syncLimit=5
+tickTime=2000
+server.1=192.168.3.131:2888:3888
+server.2=192.168.3.132:2888:3888
+server.3=192.168.3.133:2888:3888
+6、创建dataDir参数指定的目录(这里指的是“/jz/zookeeper_data”)，并在目录下创建文件，命名为“myid”。
+7、编辑“myid”文件，并在对应的IP的机器上输入对应的编号。如在192.168.3.131上，“myid”文件内容就是1，在192.168.3.132上，内容就是2
+8、将 “/jz/zookeeper-3.3.1” 目录分别拷贝到192.168.3.132和192.168.3.133下。同时修改对应的“myid”文件内容。
+9、至此，安装步骤结束，接下来启动zookeeper。
+三、启动zookeeper
+1、在三台机器上分别执行shell脚本。“sh /jz/zookeeper-3.3.1/bin/zkServer.sh start”
+2、执行完成之后输入“jps”命令，查看进程如下：
+namenode上显示如下：
+29844 JobTracker
+29583 NameNode
+31477 HMaster
+29762 SecondaryNameNode
+32356 Jps
+31376 HQuorumPeer
+datanode：
+16812 DataNode
+17032 HRegionServer
+17752 HQuorumPeer
+16921 TaskTracker
+18461 Jps
+3、通过输入“sh /jz/zookeeper-3.3.1/bin/zkServer.sh status”检查是否启动，一般返回内容如下：
+leader：
+JMX enabled by default
+Using config: /jz/zookeeper-3.3.1/bin/../conf/zoo.cfg
+Mode: leader
+follower：
+JMX enabled by default
+Using config: /jz/zookeeper-3.3.1/bin/../conf/zoo.cfg
+Mode: follower
+4、通过在控制台输入命令检查集群zookeeper启动状态。命令如“echo ruok | nc 192.168.3.131 2181”，控制台输出“imok”
+四、注意事项
+     通过shell脚本在每个机器上启动zookeeper的时候，可能会显示错误信息“Cannot open channel to X at election address”。这是由于zoo.cfg文件中指定的其他zookeeper服务找不到所导致。所有机器的zookeeper服务启动之后该错误提示将会消失。 
